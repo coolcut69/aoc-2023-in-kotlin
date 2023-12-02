@@ -33,12 +33,11 @@ fun main() {
         return total
     }
 
-    // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day02_test")
     check(part1(testInput) == 8)
     check(part2(testInput) == 2286)
 
     val input = readInput("Day02")
     check(part1(input) == 2169)
-    part2(input).println()
+    check(part2(input) == 60948)
 }
