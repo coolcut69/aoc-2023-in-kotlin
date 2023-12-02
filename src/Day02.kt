@@ -1,21 +1,11 @@
-private fun String.findNumber(color: String): Int {
+private fun String.numberOfCubes(color: String): Int {
     val filter: String? = this.split(',').find { s -> s.contains(color) }
-
-    return if (filter != null) {
-        filter.trim().split(' ')[0].toInt();
-    } else {
-        0
-    }
+    return filter?.trim()?.split(' ')?.get(0)?.toInt() ?: 0
 }
 
 fun main() {
     fun isGamePossible(sets: List<String>): Boolean {
-        for (set in sets) {
-            if (set.findNumber("blue") > 14 || set.findNumber("red") > 12 || set.findNumber("green") > 13) {
-                return false;
-            }
-        }
-        return true
+        return !sets.any { it.numberOfCubes("blue") > 14 || it.numberOfCubes("red") > 12 || it.numberOfCubes("green") > 13 }
     }
 
     fun part1(input: List<String>): Int {
