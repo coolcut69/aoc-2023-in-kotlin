@@ -5,18 +5,15 @@ fun main() {
         return s1.substring(1).trimEnd().chunked(3).map { s -> s.trim() }.map { s -> s.toInt() }
     }
 
+    fun getWinningCards(card: String): Set<Int> {
+        val numbers = card.split(':')[1].split("|")
+        val winningNumbers = getNumbers(numbers[0])
+        val ownNumbers = getNumbers(numbers[1])
+        return winningNumbers.intersect(ownNumbers.toSet())
+    }
+
     fun part1(input: List<String>): Int {
-        var total: Int = 0
-        for (card in input) {
-            val numbers = card.split(':')[1].split("|")
-            val winningNumbers = getNumbers(numbers[0])
-            val ownNumbers = getNumbers(numbers[1])
-
-            val intersect = winningNumbers.intersect(ownNumbers.toSet())
-            total += 2.0.pow(intersect.size - 1).toInt()
-        }
-
-       return total
+        return input.sumOf { 2.0.pow(getWinningCards(it).size - 1).toInt() }
     }
 
     fun part2(input: List<String>): Int {
