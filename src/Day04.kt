@@ -1,18 +1,19 @@
 import kotlin.math.pow
 
 fun main() {
+    fun getNumbers(s1: String): List<Int> {
+        return s1.substring(1).trimEnd().chunked(3).map { s -> s.trim() }.map { s -> s.toInt() }
+    }
+
     fun part1(input: List<String>): Int {
         var total: Int = 0
         for (card in input) {
             val numbers = card.split(':')[1].split("|")
-            val winningNumbers = numbers[0].substring(1).trimEnd().chunked(3).map { s -> s.trim() }.map { s -> s.toInt() }
-            val ownNumbers = numbers[1].substring(1).trimEnd().chunked(3).map { s -> s.trim() }.map { s -> s.toInt() }
+            val winningNumbers = getNumbers(numbers[0])
+            val ownNumbers = getNumbers(numbers[1])
 
-            val intersect = winningNumbers.intersect(ownNumbers)
-            println(intersect)
-            val power :Int = intersect.size -1
-            val two: Double = 2.0
-            total += two.pow(power).toInt()
+            val intersect = winningNumbers.intersect(ownNumbers.toSet())
+            total += 2.0.pow(intersect.size - 1).toInt()
         }
 
        return total
@@ -28,6 +29,6 @@ fun main() {
 //    check(part2(testInput) == 1)
 
     val input = readInput("Day04")
-    part1(input).println()
+    check(part1(input) == 23847)
 //    part2(input).println()
 }
