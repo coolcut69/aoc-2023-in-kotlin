@@ -1,11 +1,9 @@
+import kotlin.math.min
+
 data class Range(val source: Long, val destination: Long, val spread: Long)
 
 fun main() {
-    fun part1(input: List<String>): Long {
-
-        val seeds: List<Long> = input[0].split("seeds: ")[1].split(" ").map { s -> s.toLong() }
-        println(seeds)
-
+    fun parseInputToMapsOfRanges(input: List<String>): MutableList<MutableList<Range>> {
         val indexOfMaps: MutableList<Int> = ArrayList()
         for ((index, s) in input.withIndex()) {
             if (s.endsWith("map:")) {
@@ -30,20 +28,16 @@ fun main() {
             }
             allMaps.add(ranges)
         }
+        return allMaps
+    }
 
-        val names = listOf(
-            "soil",
-            "fertilizer",
-            "water",
-            "light",
-            "temperature",
-            "humidity",
-            "location"
-        )
-        val matches = ArrayList<Long>(seeds.size)
-        for (seed in seeds) {
+    fun part1(input: List<String>): Long {
+        val allMaps: MutableList<MutableList<Range>> = parseInputToMapsOfRanges(input)
+
+        var lowest = Long.MAX_VALUE
+        for (seed in input[0].split("seeds: ")[1].split(" ").map { s -> s.toLong() }) {
             var match = seed
-            for ((index, map) in allMaps.withIndex()) {
+            for (map in allMaps) {
                 var found = false
                 for (m in map) {
                     if (!found && LongRange(m.source, m.source + m.spread - 1).contains(match)) {
@@ -52,19 +46,41 @@ fun main() {
                     }
                 }
             }
-            matches.add(match)
+            lowest = min(lowest, match)
         }
-        return matches.min()
+        return lowest
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: List<String>): Long {
+        val allMaps: MutableList<MutableList<Range>> = parseInputToMapsOfRanges(input)
+
+        val seeds: List<Long> = input[0].split("seeds: ")[1].split(" ").map { s -> s.toLong() }
+        val toList = seeds.chunked(2).map { LongRange(it[0], it[0] + it[1] - 1) }.toList()
+
+        var lowest = Long.MAX_VALUE
+        for (longRange in toList) {
+            for (seed in longRange.asSequence()) {
+                var match = seed
+                for (map in allMaps) {
+                    var found = false
+                    for (m in map) {
+                        if (!found && LongRange(m.source, m.source + m.spread - 1).contains(match)) {
+                            match = match + m.destination - m.source
+                            found = true
+                        }
+                    }
+                }
+                lowest = min(lowest, match)
+            }
+        }
+        return lowest
     }
+
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day05_test")
     check(part1(testInput) == 35L)
-//    check(part2(testInput) == 1)
+    check(part2(testInput) == 46L)
 //
     val input = readInput("Day05")
     check(part1(input) == 226172555L)
