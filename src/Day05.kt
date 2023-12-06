@@ -72,6 +72,7 @@ fun main() {
                 }
                 lowest = min(lowest, match)
             }
+            println(longRange)
         }
         return lowest
     }
@@ -81,8 +82,7 @@ fun main() {
     val testInput = readInput("Day05_test")
     check(part1(testInput) == 35L)
     check(part2(testInput) == 46L)
-//
+
     val input = readInput("Day05")
-    check(part1(input) == 226172555L)
-//    part2(input).println()
+//    check(part2(input) == 47909639L)
 }
