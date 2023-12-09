@@ -14,15 +14,25 @@ fun main() {
         return report
     }
 
-    fun prediction(report: List<MutableList<Int>>): Int {
+    fun lastPrediction(report: List<MutableList<Int>>): Int {
         var prediction = 0
-        for ((index, line) in report.withIndex()) {
+        for ((index, _) in report.withIndex()) {
             if (index != 0) {
                 prediction += report[index - 1].last()
             }
         }
         prediction += report.last().last()
-//        println(prediction)
+        return prediction
+    }
+
+    fun firstPrediction(report: List<MutableList<Int>>): Int {
+        var prediction = 0
+        for ((index, _) in report.withIndex()) {
+            if (index != 0) {
+                prediction =  report[index - 1].first() - prediction
+            }
+        }
+        prediction = report.last().first() - prediction
         return prediction
     }
 
@@ -31,21 +41,27 @@ fun main() {
         for (line in input){
             val history = line.split(" ").map { it.toInt() }.toMutableList()
             val report = historyToReport(history).reversed()
-            sum += prediction(report)
+            sum += lastPrediction(report)
         }
         return sum
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        var sum = 0
+        for (line in input){
+            val history = line.split(" ").map { it.toInt() }.toMutableList()
+            val report = historyToReport(history).reversed()
+            sum += firstPrediction(report)
+        }
+        return sum
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day09_test")
     check(part1(testInput) == 114)
-//    check(part2(testInput) == 1)
+    check(part2(testInput) == 2)
 
     val input = readInput("Day09")
-    part1(input).println()
-//    part2(input).println()
+    check(part1(input) == 1853145119)
+    part2(input).println()
 }
