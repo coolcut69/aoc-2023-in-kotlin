@@ -1,59 +1,20 @@
 fun main() {
-    fun historyToReport(toList: MutableList<Int>): MutableList<MutableList<Int>> {
-        val report: MutableList<MutableList<Int>> = ArrayList()
-        report.add(toList)
-        var toCheck = toList
-        do {
-            val sequence: MutableList<Int> = ArrayList()
-            for (n in 0..<toCheck.size - 1) {
-                sequence.add(toCheck[n + 1] - toCheck[n])
-            }
-            report.add(sequence)
-            toCheck = sequence
-        } while (!sequence.all { it == 0 })
-        return report
-    }
 
-    fun lastPrediction(report: List<MutableList<Int>>): Int {
-        var prediction = 0
-        for ((index, _) in report.withIndex()) {
-            if (index != 0) {
-                prediction += report[index - 1].last()
-            }
+    fun extrapolate(row: List<Int>): Int =
+        if (row.all { it == 0 }) 0
+        else {
+            val differences = row.windowed(2, 1).map { it[1] - it[0] }
+            row.last() + extrapolate(differences)
         }
-        prediction += report.last().last()
-        return prediction
-    }
-
-    fun firstPrediction(report: List<MutableList<Int>>): Int {
-        var prediction = 0
-        for ((index, _) in report.withIndex()) {
-            if (index != 0) {
-                prediction =  report[index - 1].first() - prediction
-            }
-        }
-        prediction = report.last().first() - prediction
-        return prediction
-    }
 
     fun part1(input: List<String>): Int {
-        var sum = 0
-        for (line in input){
-            val history = line.split(" ").map { it.toInt() }.toMutableList()
-            val report = historyToReport(history).reversed()
-            sum += lastPrediction(report)
-        }
-        return sum
+        val rows = input.map { it.split(" ").map { i -> i.toInt() } }
+        return rows.sumOf { extrapolate(it) }
     }
 
     fun part2(input: List<String>): Int {
-        var sum = 0
-        for (line in input){
-            val history = line.split(" ").map { it.toInt() }.toMutableList()
-            val report = historyToReport(history).reversed()
-            sum += firstPrediction(report)
-        }
-        return sum
+        val rows = input.map { it.split(" ").map { i -> i.toInt() } }
+        return rows.map { it.reversed() }.sumOf { extrapolate(it) }
     }
 
     // test if implementation meets criteria from the description, like:
